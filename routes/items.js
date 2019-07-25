@@ -6,7 +6,7 @@ const validateItem = require("../validation/validateItem.js");
 
 router.get("/getAll", (req, res) => {
     const errors = {};
-    Item.find({})
+    Item.find({}, '-email')
     .then(items => {
         if(!items) {
             errors.noItems = "There are no items";
@@ -68,7 +68,7 @@ router.post("/addHash", (req, res) => {
 
 router.put("/update", (req, res) => {
     r = req.body;
-    Item.updateOne({ 'email': r.email }, { $set: { 'username': r.username, 'content': r.content} })
+    Item.updateOne({ 'username': r.username }, { $set: { 'username': r.username, 'content': r.content} })
         .then(() => {
             res.send("Updated Item")
         })
@@ -79,7 +79,7 @@ router.put("/update", (req, res) => {
 router.delete("/delete", (req, res) => {
     var r = req.body;
     const errors = {};
-    var search = { 'email': r.email };
+    var search = { 'username': r.username };
     Item.findOneAndDelete(search)
         .then(items => {
             if (!items) {
