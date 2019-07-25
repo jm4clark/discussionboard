@@ -2,12 +2,15 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 var itemSchema = new Schema({
-    name: String,
-    age: Number,
-    location: [{
-        number: Number,
-        place: String
-    }]
+    name: {
+        type: String,
+        required: true 
+    },
+    content: String,
+    email: {
+        type: String,
+        required: true 
+    }
 });
 
 var Item = mongoose.model(

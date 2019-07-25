@@ -24,8 +24,8 @@ router.post("/add", (req, res) => {
         const errors = {};
         var newItem = new Item({
             name: r.name,
-            age: r.age,
-            location: r.location
+            content: r.content,
+            email: r.email
         });
 
         newItem.save().then(() => console.log("added"));
@@ -34,22 +34,29 @@ router.post("/add", (req, res) => {
 })
 
 router.put("/update", (req, res) => {
-    var r = req.body;
-    const errors = {};
-
-    Item.updateOne({ '_id': req.body._id}, { $set: { 'username': req.body.username, 'content': req.body.content}})
-    .then(() => { res.send("Updated item")})
-    .catch(err => res.status(404).json({noItem: `${err}`}));
+    r = req.body;
+    Item.updateOne({ 'email': r.email }, { $set: { 'username': r.username, 'content': r.content} })
+        .then(() => {
+            res.send("Updated Item")
+        })
+        .catch(err => res.status(404).json(err));
 });
 
-router.delete("/delete", (req,res) => {
-    Item.findById(req.body._id).then(item => {
-        item.remove().then(() => {
-            res.json({ success: true });
+
+router.delete("/delete", (req, res) => {
+    var r = req.body;
+    const errors = {};
+    var search = { 'email': r.email };
+    Item.findOneAndDelete(search)
+        .then(items => {
+            if (!items) {
+                errors.noItems = "There are no items";
+                res.status(404).json(errors);
+            }
+            res.send('Removed Item');
         })
-        .catch( err => res.status(404).json({ success: false}));
-    })
-})
+        .catch(err => res.status(404).json(err));
+});
 
 
 
